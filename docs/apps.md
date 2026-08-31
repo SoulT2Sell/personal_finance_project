@@ -1,0 +1,21 @@
+# we need these apps in our project 
+
+- config/
+  - settings/
+  - urls/
+  - ...
+- users/
+- accounts/
+- transactions/
+- categories/
+- budgets/
+- reports/
+- dashboard/
+- ai/(**it has some tools not a direct db connect**)
+  - get_balance
+  - get_monthly_income
+  - Copyright_monthly_expenses
+  - ...
+- api/
+- templates/
+- static/
