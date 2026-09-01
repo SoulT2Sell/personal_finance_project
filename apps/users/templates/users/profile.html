@@ -1,0 +1,17 @@
+<h1>Profile for user:</h1>
+<p>{{request.user.username}}</p>
+<p>{{request.user.email}}</p>
+<p>{{request.user.first_name}}</p>
+<p>{{request.user.last_name}}</p>
+<p>{{request.user.userprofile.phone_number}}</p>
+<p>{{request.user.userprofile.preferred_currency}}</p>
+<p>{{request.user.userprofile.timezone}}</p>
+
+<form method="get" action="{% url 'users:profile_edit'%}">
+    <button style="submit">ویرایش اطلاعات</button>
+</form>
+
+<form method="post" action="{% url 'users:logout' %}">
+    {% csrf_token %}
+    <button style="submit">خروج</button>
+</form>

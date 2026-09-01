@@ -1,0 +1,18 @@
+<form method="post">
+    {% csrf_token %}
+    
+    User_Info:
+    {{user_form.as_p}}
+    {{user_form.errors}}
+
+    UserProfile_Info:
+    {{profile_form.as_p}}
+    {{profile_form.errors}}
+
+    <button type="submit">تایید</button>
+
+</form>
+
+<form method="get" action="{% url 'users:profile' %}">
+    <button type="submit">بازگشت</button>
+</form>
