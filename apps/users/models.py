@@ -1,17 +1,26 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
+
+import uuid
 
 # Create your models here.
 
 class User(AbstractUser):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False        
+    )
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="userprofile")
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="userprofile")
     phone_number = models.CharField(max_length=20, blank=True)
     preferred_currency = models.CharField(max_length=3, default="USD")
     timezone = models.CharField(max_length=50, default="UTC")

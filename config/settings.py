@@ -50,7 +50,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'personal_finance.urls'
+ROOT_URLCONF = 'config.urls'
+
+AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES = [
     {
@@ -67,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'personal_finance.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
