@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path
 
 from apps.users.views import UserSignupView, UserLoginView, UserLogoutView, UserProfileView, UserProfileUpdateView
