@@ -1,19 +1,43 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView, ListView, CreateView, UpdateView, DetailView
+from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from apps.accounts.forms import AccountForm
 from apps.accounts.models import Account
+from apps.accounts.choices import AccountType
 
 # Create your views here.
 class AccountsView(LoginRequiredMixin, ListView):
     model = Account
     template_name = "accounts/accounts.html"
     context_object_name = "accounts"
+    login_url = "users:login"
 
     def get_queryset(self):
-        return self.request.user.accounts.all()
+        queryset = self.request.user.accounts.filter(is_active=True)
+        account_type = self.request.GET.get("account_type")
+        currency = self.request.GET.get("currency")
+
+        if account_type:
+            queryset = queryset.filter(account_type=account_type)
+
+        if currency:
+            queryset = queryset.filter(currency=currency)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["account_types"] = AccountType.choices
+        context["currencies"] = (
+            self.request.user.accounts.values_list("currency", flat=True).distinct()
+        )
+
+        return context;
+
 
 class AccountView(LoginRequiredMixin, DetailView):
     model = Account
@@ -21,7 +45,47 @@ class AccountView(LoginRequiredMixin, DetailView):
     context_object_name = "account"
     slug_field = "slug"
     slug_url_kwarg = "slug"
+    login_url = "users:login"
 
     def get_queryset(self):
         return self.request.user.accounts.all()
 
+class AccountCreateView(LoginRequiredMixin, CreateView):
+    model = Account
+    template_name = "accounts/create.html"
+    form_class = AccountForm
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    success_url = reverse_lazy("accounts:list")
+    login_url = "users:login"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class AccountUpdateView(LoginRequiredMixin, UpdateView):
+    model = Account
+    template_name = "accounts/update.html"
+    form_class = AccountForm
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    success_url = reverse_lazy("accounts:list")
+    login_url = "users:login"
+
+    def get_queryset(self):
+        return self.request.user.accounts.all()
+
+class AccountDeleteView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
+    def post(self, request, *args, **kwargs):
+        account = get_object_or_404(
+            Account,
+            user=request.user,
+            slug=kwargs["slug"]
+        )
+
+        account.is_active = False
+        account.save(update_fields=["is_active"])
+
+        return redirect("accounts:list")
