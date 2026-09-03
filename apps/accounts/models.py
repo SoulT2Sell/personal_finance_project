@@ -1,8 +1,7 @@
 from django.db import models
 from django.conf import settings
-from django.utils.text import slugify
 import uuid
-from unidecode import unidecode
+
 
 from apps.accounts.choices import AccountType
 
@@ -18,10 +17,6 @@ class Account(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(unidecode(self.name))
-        super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
