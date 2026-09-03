@@ -1,0 +1,17 @@
+<h1>{{account.name}}</h1>
+<p>{{account.account_type}}</p>
+<p>{{account.currency}}</p>
+<p>{{account.balance}}</p>
+
+<a href="{% url 'accounts:edit' account.slug %}">
+    ویرایش
+</a>
+<br />
+<a href="{% url 'accounts:list' %}">
+   برگشت
+</a>
+        
+<form method="Post" action="{% url 'accounts:delete' account.slug %}">
+    {% csrf_token %}
+    <button type="submit">غیر فعال کردن</button>
+</form>
