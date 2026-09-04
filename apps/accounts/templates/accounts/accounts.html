@@ -2,22 +2,52 @@
 
 <a href="{% url 'accounts:create' %}"> ساخت حساب جدید </a>
 
-<form method="Get">
+<form method="get">
+
+    <!-- Search -->
+    <label for="search">جستجو</label>
+    <input
+        type="text"
+        id="search"
+        name="search"
+        placeholder="جستجوی حساب..."
+        value="{{ request.GET.search }}"
+    >
+    <br />
+
+    <!-- Account Type -->
     <label for="account_type">نوع حساب</label>
-
-    <select>
+    <select name="account_type" id="account_type">
         <option value="">همه</option>
+
         {% for value, label in account_types %}
-        <option value="{{value}}">{{label}}</option>
+            <option
+                value="{{ value }}"
+                {% if request.GET.account_type == value %}selected{% endif %}
+            >
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+    <br />
+    
+    <!-- Currency -->
+    <label for="currency">نوع ارز</label>
+    <select name="currency" id="currency">
+        <option value="">همه</option>
+
+        {% for currency in currencies %}
+            <option
+                value="{{ currency }}"
+                {% if request.GET.currency == currency %}selected{% endif %}
+            >
+                {{ currency }}
+            </option>
         {% endfor %}
     </select>
 
-    <select>
-        <option value="">همه</option>
-        {% for currency in currencies %}
-        <option value="{{currency}}">{{currency}}</option>
-        {% endfor %}
-    </select>
+    <button type="submit">جستجو</button>
+
 </form>
 
 {% for account in accounts %}
