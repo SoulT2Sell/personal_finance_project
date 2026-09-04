@@ -1,0 +1,12 @@
+<h1>ویرایش</h1>
+
+<form method="Post">
+    {% csrf_token %}
+    {{form.as_p}}
+    {{form.errors}}
+    <button type="submit">تایید</button>
+</form>
+
+<form method="Get" action="{% url 'categories:detail' category.slug %}">
+    <button type="submit">برگشت</button>
+</form>

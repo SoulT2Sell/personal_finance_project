@@ -219,3 +219,5 @@ __marimo__/
 
 # Migrations
 /apps/users/migrations
+/apps/accounts/migrations
+/apps/categories/migrations

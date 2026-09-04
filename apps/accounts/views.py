@@ -17,9 +17,13 @@ class AccountsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = self.request.user.accounts.filter(is_active=True)
+        search = self.request.GET.get("search")
         account_type = self.request.GET.get("account_type")
         currency = self.request.GET.get("currency")
 
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+            
         if account_type:
             queryset = queryset.filter(account_type=account_type)
 
@@ -76,8 +80,6 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user.accounts.all()
 
 class AccountDeleteView(LoginRequiredMixin, View):
-    login_url = "users:login"
-
     def post(self, request, *args, **kwargs):
         account = get_object_or_404(
             Account,

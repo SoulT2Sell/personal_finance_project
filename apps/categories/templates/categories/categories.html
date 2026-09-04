@@ -1,0 +1,36 @@
+<h1>کتگوری ها</h1>
+
+<a href="{% url 'categories:create' %}"> ساخت کتگوری جدید </a>
+
+<form method="get">
+    <input type="text" name="search" placeholder="جستوجو با اسم ..." value="{{ request.GET.search }}">
+
+    <button type="submit">Search</button>
+</form>
+
+{% for category in categories %}
+
+    <div>
+        <h2>{{ category.name }}</h2>
+
+        <a href="{% url 'categories:detail' category.slug %}">
+            اطلاعات
+        </a>
+        
+        <br />
+
+        <a href="{% url 'categories:edit' category.slug %}">
+            ویرایش
+        </a>
+        
+        <form method="Post" action="{% url 'categories:delete' category.slug %}">
+            {% csrf_token %}
+            <button type="submit">غیر فعال کردن</button>
+        </form>
+    </div>
+
+{% empty %}
+
+    <p>شما هیچ حسابی ندارید</p>
+
+{% endfor %}
