@@ -1,3 +1,5 @@
+from itertools import count
+
 from django import forms
 from django.utils.text import slugify
 from unidecode import unidecode
@@ -10,20 +12,22 @@ class AccountForm(forms.ModelForm):
         fields = ["name", "account_type", "currency", "balance"]
 
     def save(self, commit = True):
-        account = super().save(commit)
+        account = super().save(commit=False)
 
-        base_slug = slugify(unidecode(account.name))
-        slug = base_slug
+        base_name = account.name
+        name = base_name
         counter = 2
 
         while Account.objects.filter(
             user = account.user,
-            slug = slug,
+            name = name
         ).exclude(pk=account.pk).exists():
-            slug = f"{base_slug}-{counter}"
+            name = f"{base_name}-{counter}"
             counter += 1
 
-        account.slug = slug
+
+        account.name = name
+        account.slug = slugify(unidecode(name))
 
         if commit:
             account.save()
