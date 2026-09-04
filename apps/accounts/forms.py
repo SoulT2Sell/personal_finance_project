@@ -1,5 +1,3 @@
-from itertools import count
-
 from django import forms
 from django.utils.text import slugify
 from unidecode import unidecode
