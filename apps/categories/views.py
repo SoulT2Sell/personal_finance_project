@@ -1,5 +1,5 @@
-from django.shortcuts import redirect, get_object_or_404
-from django.views.generic import ListView, DetailView,CreateView, UpdateView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -20,9 +20,10 @@ class CategoriesView(LoginRequiredMixin, ListView):
         search = self.request.GET.get("search")
 
         if search:
-            queryset = queryset.filter(name__icontains = search)
+            queryset = queryset.filter(name__icontains=search)
 
         return queryset
+
 
 class CategoryView(LoginRequiredMixin, DetailView):
     model = Category
@@ -34,6 +35,7 @@ class CategoryView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return self.request.user.categories.all()
+
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
@@ -48,6 +50,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = Category
     template_name = "categories/update.html"
@@ -60,16 +63,20 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return self.request.user.categories.all()
 
+
 class CategoryDeleteView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        category = get_object_or_404(Category, user=request.user, slug=kwargs["slug"])
+        template_name = "categories/confirm_delete.html"
+        context = {"category": category}
+
+        return render(request, template_name, context)
+
     def post(self, request, *args, **kwargs):
-        category = get_object_or_404(
-            Category,
-            user = request.user,
-            slug = kwargs["slug"]
-        )
+        category = get_object_or_404(Category, user=request.user, slug=kwargs["slug"])
 
         category.is_active = False
-        category.save(update_fields = ["is_active"])
+        category.save(update_fields=["is_active"])
 
         return redirect("categories:list")
-

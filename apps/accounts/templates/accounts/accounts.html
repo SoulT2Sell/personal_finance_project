@@ -20,12 +20,12 @@
     <select name="account_type" id="account_type">
         <option value="">همه</option>
 
-        {% for value, label in account_types %}
+        {% for account_type in account_types %}
             <option
-                value="{{ value }}"
+                value="{{ account_type }}"
                 {% if request.GET.account_type == value %}selected{% endif %}
             >
-                {{ label }}
+                {{ account_type.name }}
             </option>
         {% endfor %}
     </select>
@@ -56,11 +56,11 @@
         <h2>{{ account.name }}</h2>
 
         <p>
-            نوع: {{ account.get_account_type_display }}
+            نوع: {{ account.account_type.name }}
         </p>
 
         <p>
-            ارز: {{ account.currency }}
+            ارز: {{ account.currency.name }}
         </p>
 
         <p>
@@ -77,7 +77,7 @@
             ویرایش
         </a>
         
-        <form method="Post" action="{% url 'accounts:delete' account.slug %}">
+        <form method="get" action="{% url 'accounts:delete' account.slug %}">
             {% csrf_token %}
             <button type="submit">غیر فعال کردن</button>
         </form>

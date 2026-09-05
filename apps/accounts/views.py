@@ -1,12 +1,12 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from apps.accounts.forms import AccountForm
-from apps.accounts.models import Account
-from apps.accounts.choices import AccountType
+from apps.accounts.models import Account, AccountType
+
 
 # Create your views here.
 class AccountsView(LoginRequiredMixin, ListView):
@@ -23,7 +23,7 @@ class AccountsView(LoginRequiredMixin, ListView):
 
         if search:
             queryset = queryset.filter(name__icontains=search)
-            
+
         if account_type:
             queryset = queryset.filter(account_type=account_type)
 
@@ -35,12 +35,12 @@ class AccountsView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["account_types"] = AccountType.choices
-        context["currencies"] = (
-            self.request.user.accounts.values_list("currency", flat=True).distinct()
-        )
+        context["account_types"] = AccountType.objects.all()
+        context["currencies"] = self.request.user.accounts.values_list(
+            "currency", flat=True
+        ).distinct()
 
-        return context;
+        return context
 
 
 class AccountView(LoginRequiredMixin, DetailView):
@@ -53,6 +53,7 @@ class AccountView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return self.request.user.accounts.all()
+
 
 class AccountCreateView(LoginRequiredMixin, CreateView):
     model = Account
@@ -67,6 +68,7 @@ class AccountCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class AccountUpdateView(LoginRequiredMixin, UpdateView):
     model = Account
     template_name = "accounts/update.html"
@@ -79,13 +81,16 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return self.request.user.accounts.all()
 
+
 class AccountDeleteView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        account = get_object_or_404(Account, user=request.user, slug=kwargs["slug"])
+        template_name = "accounts/confirm_delete.html"
+        context = {"account": account}
+        return render(request, template_name, context)
+
     def post(self, request, *args, **kwargs):
-        account = get_object_or_404(
-            Account,
-            user=request.user,
-            slug=kwargs["slug"]
-        )
+        account = get_object_or_404(Account, user=request.user, slug=kwargs["slug"])
 
         account.is_active = False
         account.save(update_fields=["is_active"])

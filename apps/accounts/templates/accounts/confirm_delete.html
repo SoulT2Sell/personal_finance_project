@@ -1,0 +1,18 @@
+<h2>غیر فعال کردن حساب</h2>
+
+<p>
+    از غیر فعال کردن مطمين هستید؟
+    <strong>{{ account.name }}</strong>
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        تایید
+    </button>
+
+    <a href="{% url 'accounts:detail' account.slug %}">
+        لغو
+    </a>
+</form>

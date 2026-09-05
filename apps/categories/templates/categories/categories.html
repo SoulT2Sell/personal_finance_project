@@ -23,7 +23,7 @@
             ویرایش
         </a>
         
-        <form method="Post" action="{% url 'categories:delete' category.slug %}">
+        <form method="get" action="{% url 'categories:delete' category.slug %}">
             {% csrf_token %}
             <button type="submit">غیر فعال کردن</button>
         </form>

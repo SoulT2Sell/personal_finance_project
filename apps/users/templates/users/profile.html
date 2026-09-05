@@ -4,7 +4,7 @@
 <p>{{request.user.first_name}}</p>
 <p>{{request.user.last_name}}</p>
 <p>{{request.user.userprofile.phone_number}}</p>
-<p>{{request.user.userprofile.preferred_currency}}</p>
+<p>{{request.user.userprofile.preferred_currency.name}}</p>
 <p>{{request.user.userprofile.timezone}}</p>
 
 <form method="get" action="{% url 'users:profile_edit'%}">

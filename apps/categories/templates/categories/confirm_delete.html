@@ -1,0 +1,18 @@
+<h2>غیر فعال کردن  کتگوری</h2>
+
+<p>
+    از غیر فعال کردن مطمين هستید؟
+    <strong>{{ category.name }}</strong>
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        تایید
+    </button>
+
+    <a href="{% url 'categories:detail' category.slug %}">
+        لغو
+    </a>
+</form>

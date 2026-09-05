@@ -11,7 +11,7 @@
    برگشت
 </a>
         
-<form method="Post" action="{% url 'accounts:delete' account.slug %}">
+<form method="get" action="{% url 'accounts:delete' account.slug %}">
     {% csrf_token %}
     <button type="submit">غیر فعال کردن</button>
 </form>
