@@ -247,7 +247,3 @@ Thumbs.db
 *.sql
 
 # Migrations
-/apps/users/migrations
-/apps/accounts/migrations
-/apps/categories/migrations
-/apps/transactions/migrations
