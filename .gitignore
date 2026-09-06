@@ -217,7 +217,37 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+
+# Django
+db.sqlite3
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.dump
+*.sql
+
 # Migrations
 /apps/users/migrations
 /apps/accounts/migrations
 /apps/categories/migrations
+/apps/transactions/migrations

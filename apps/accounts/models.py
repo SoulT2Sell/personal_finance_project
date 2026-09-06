@@ -2,25 +2,20 @@ from django.db import models
 from django.conf import settings
 import uuid
 
-from django.db.models import ForeignKey
-
-
+from helpers.models.basemodel import BaseModel
 from apps.common.models import Currency
 
 
 # Create your models here.
-class AccountType(models.Model):
+class AccountType(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
 
-class Account(models.Model):
+class Account(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="accounts"
@@ -34,9 +29,6 @@ class Account(models.Model):
         Currency, on_delete=models.PROTECT, related_name="currency"
     )
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         constraints = [
