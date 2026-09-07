@@ -1,0 +1,14 @@
+<h1>ساخت تراکنش</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    {{ form.errors }}
+
+    <button type="submit">تایید</button>
+</form>
+
+<form method="get" action="{% url 'transactions:list' %}">
+    <button type="submit">برگشت</button>
+</form>

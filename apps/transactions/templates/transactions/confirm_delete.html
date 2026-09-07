@@ -1,0 +1,21 @@
+<h2>غیر فعال کردن تراکنش</h2>
+
+<p>
+    از غیر فعال کردن مطمئن هستید؟
+    <strong>
+        {{ transaction.amount }}
+        {{ transaction.account.currency.name }}
+    </strong>
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        تایید
+    </button>
+
+    <a href="{% url 'transactions:detail' transaction.pk %}">
+        لغو
+    </a>
+</form>

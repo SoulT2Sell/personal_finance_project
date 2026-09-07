@@ -1,0 +1,22 @@
+<h1>{{ transaction.amount }} {{ transaction.account.currency.name }}</h1>
+
+<p>{{ transaction.get_transaction_type_display }}</p>
+<p>{{ transaction.account.name }}</p>
+<p>{{ transaction.category.name }}</p>
+<p>{{ transaction.description }}</p>
+<p>{{ transaction.transaction_date }}</p>
+
+<a href="{% url 'transactions:edit' transaction.pk %}">
+    ویرایش
+</a>
+
+<br />
+
+<a href="{% url 'transactions:list' %}">
+    برگشت
+</a>
+
+<form method="get" action="{% url 'transactions:delete' transaction.pk %}">
+    {% csrf_token %}
+    <button type="submit">غیر فعال کردن</button>
+</form>

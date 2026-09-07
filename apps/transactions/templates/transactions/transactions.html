@@ -1,0 +1,184 @@
+<h1>تراکنش‌ها</h1>
+
+<a href="{% url 'transactions:create' %}">
+    تراکنش جدید
+</a>
+
+<form method="get">
+
+    <!-- Account -->
+    <label for="account">حساب</label>
+    <select name="account" id="account">
+        <option value="">همه</option>
+
+        {% for account in accounts %}
+            <option
+                value="{{ account.id }}"
+                {% if request.GET.account == account.id|stringformat:"s" %}selected{% endif %}
+            >
+                {{ account.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br />
+
+    <!-- Category -->
+    <label for="category">دسته‌بندی</label>
+    <select name="category" id="category">
+        <option value="">همه</option>
+
+        {% for category in categories %}
+            <option
+                value="{{ category.id }}"
+                {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}
+            >
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br />
+
+    <!-- Transaction Type -->
+    <label for="transaction_type">نوع تراکنش</label>
+    <select name="transaction_type" id="transaction_type">
+        <option value="">همه</option>
+
+        {% for value, label in transaction_types %}
+            <option
+                value="{{ value }}"
+                {% if request.GET.transaction_type == value %}selected{% endif %}
+            >
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br />
+
+    <!-- Currency -->
+    <label for="currency">ارز</label>
+    <select name="currency" id="currency">
+        <option value="">همه</option>
+
+        {% for currency in currencies %}
+            <option
+                value="{{ currency.id }}"
+                {% if request.GET.currency == currency.id|stringformat:"s" %}selected{% endif %}
+            >
+                {{ currency.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br />
+
+    <!-- Date From -->
+    <label for="date_from">از تاریخ</label>
+    <input
+        type="date"
+        id="date_from"
+        name="date_from"
+        value="{{ request.GET.date_from }}"
+    >
+
+    <br />
+
+    <!-- Date To -->
+    <label for="date_to">تا تاریخ</label>
+    <input
+        type="date"
+        id="date_to"
+        name="date_to"
+        value="{{ request.GET.date_to }}"
+    >
+
+    <br />
+
+    <!-- Minimum Amount -->
+    <label for="amount_min">حداقل مبلغ</label>
+    <input
+        type="number"
+        id="amount_min"
+        name="amount_min"
+        step="0.01"
+        value="{{ request.GET.amount_min }}"
+    >
+
+    <br />
+
+    <!-- Maximum Amount -->
+    <label for="amount_max">حداکثر مبلغ</label>
+    <input
+        type="number"
+        id="amount_max"
+        name="amount_max"
+        step="0.01"
+        value="{{ request.GET.amount_max }}"
+    >
+
+    <br />
+
+    <button type="submit">جستجو</button>
+
+</form>
+
+
+{% for transaction in transactions %}
+
+    <div>
+
+        <h2>
+            {{ transaction.amount }}
+            {{ transaction.currency.name }}
+        </h2>
+
+        <p>
+            نوع تراکنش:
+            {{ transaction.get_transaction_type_display }}
+        </p>
+
+        <p>
+            حساب:
+            {{ transaction.account.name }}
+        </p>
+
+        <p>
+            دسته‌بندی:
+            {{ transaction.category.name }}
+        </p>
+
+        <p>
+            توضیحات:
+            {{ transaction.description }}
+        </p>
+
+        <p>
+            تاریخ:
+            {{ transaction.transaction_date }}
+        </p>
+
+        <a href="{% url 'transactions:detail' transaction.pk %}">
+            اطلاعات
+        </a>
+
+        <br />
+
+        <a href="{% url 'transactions:edit' transaction.pk %}">
+            ویرایش
+        </a>
+
+        <form method="get" action="{% url 'transactions:delete' transaction.pk %}">
+            <button type="submit">
+                غیر فعال کردن
+            </button>
+        </form>
+
+    </div>
+
+{% empty %}
+
+    <p>شما هیچ تراکنشی ندارید.</p>
+
+{% endfor %}

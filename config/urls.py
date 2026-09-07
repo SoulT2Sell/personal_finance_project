@@ -28,4 +28,5 @@ urlpatterns = [
         "categories/",
         include(("apps.categories.urls", "categories"), namespace="categories"),
     ),
+    path("transactions/", include(("apps.transactions.urls", "transactions"), namespace="transactions"))
 ]
