@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from apps.accounts.forms import AccountForm
 from apps.accounts.models import Account, AccountType
+from apps.common.models import Currency
 
 
 # Create your views here.
@@ -35,10 +36,8 @@ class AccountsView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["account_types"] = AccountType.objects.all()
-        context["currencies"] = self.request.user.accounts.values_list(
-            "currency", flat=True
-        ).distinct()
+        context["account_types"] = AccountType.objects.filter(is_active=True)
+        context["currencies"] = Currency.objects.filter(is_active=True)
 
         return context
 
@@ -79,7 +78,7 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "users:login"
 
     def get_queryset(self):
-        return self.request.user.accounts.all()
+        return self.request.user.accounts.filter(is_active=True)
 
 
 class AccountDeleteView(LoginRequiredMixin, View):

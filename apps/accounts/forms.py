@@ -2,13 +2,20 @@ from django import forms
 from django.utils.text import slugify
 from unidecode import unidecode
 
-from apps.accounts.models import Account
+from apps.accounts.models import Account, AccountType
+from apps.common.models import Currency
 
 
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = ["name", "account_type", "currency", "balance"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["account_type"].queryset = AccountType.objects.filter(is_active=True)
+        self.fields["currency"].queryset = Currency.objects.filter(is_active=True)
 
     def save(self, commit=True):
         account = super().save(commit=False)

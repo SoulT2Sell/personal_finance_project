@@ -1,17 +1,18 @@
 from django.db import models
 from django.conf import settings
-import uuid
 
 from helpers.models.basemodel import BaseModel
 # Create your models here.
 class Category(BaseModel):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="categories"
     )
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100)
 
+    def __str__(self):
+        return self.name
+    
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -25,3 +26,4 @@ class Category(BaseModel):
                 name="unique_category_slug_per_user",
             ),
         ]
+

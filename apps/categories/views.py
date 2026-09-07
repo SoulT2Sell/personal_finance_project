@@ -61,7 +61,7 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "users:login"
 
     def get_queryset(self):
-        return self.request.user.categories.all()
+        return self.request.user.categories.filter(is_active=True)
 
 
 class CategoryDeleteView(LoginRequiredMixin, View):
