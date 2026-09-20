@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.views import View
 from django.urls import reverse_lazy
@@ -9,7 +10,10 @@ from apps.transactions.forms import TransactionForm
 from apps.transactions.choices import TransactionType
 from apps.common.models import Currency
 
+from services.transaction_service import TransactionService
+
 # Create your views here.
+# Transaction Views
 class TransactionsView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = "transactions/transactions.html"
@@ -87,7 +91,16 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+
+        try:
+            self.object = TransactionService.create(
+                transaction_obj=form.instance
+            )
+            messages.success(self.request, "گردش حساب با موفقیت ساخته شد")
+            return redirect("transactions:list")
+        except Exception as ex:
+            form.add_error(None, f"خطا در ساخت گردش حساب : {str(ex)}")
+            return self.form_invalid(form)
 
 class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     model = Transaction
@@ -104,19 +117,32 @@ class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return self.request.user.transactions.filter(is_active=True)
 
+    def form_valid(self, form):
+        try:
+            self.object = TransactionService.update(transaction_obj=form.instance)
+            messages.success(self.request, "تراکنش با موفقیت ویرایش شد")
+            return redirect("transactions:detail", self.object.pk)
+        except Exception as ex:
+            form.add_error(None, f"خطا در ویرایش تراکنش : {str(ex)}")
+            return self.form_invalid(form)
+
 class TransactionDeleteView(LoginRequiredMixin, View):
+    template_name = "transactions/confirm_delete.html"
+
     def get(self, request, *args, **kwargs):
-        transaction = get_object_or_404(Transaction, user=request.user)
-        template_name = "transactions/confirm_delete.html"
+        transaction = get_object_or_404(Transaction, user=request.user, id=kwargs["pk"])
         context = {"transaction": transaction}
 
-        return render(request, template_name, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        transaction = get_object_or_404(Transaction, user=request.user)
-        transaction.is_active = False
-        transaction.save()
+        transaction = get_object_or_404(Transaction, user=request.user, id=kwargs["pk"])
+        context = {"transaction": transaction}
 
-        return redirect("transactions:list")
-
-
+        try:      
+            TransactionService.deactivate(transaction_obj=transaction)
+            messages.success(request, "تراکنش با موفقیت حذف شد")
+            return redirect("transactions:list")
+        except Exception as ex:
+            messages.error(request, str(ex))
+            return render(request, self.template_name, context)
