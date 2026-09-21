@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}مدیریت مالی{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="{% static 'common/css/base.css' %}" />
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <span class="sidebar__brand-mark">مم</span>
+        <span>دفتر مالی</span>
+      </div>
+
+      <div class="sidebar__profile">
+        <a href="{% url 'users:profile' %}" class="sidebar__user {% if request.resolver_match.app_name == 'users' %}is-active{% endif %}">
+          <span class="sidebar__user-avatar">{{ request.user.username|slice:":1"|upper }}</span>
+          <span class="sidebar__user-name">پروفایل</span>
+        </a>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="{% url 'accounts:list' %}" class="sidebar__link {% if request.resolver_match.app_name == 'accounts' %}is-active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
+          حساب‌ها
+        </a>
+        <a href="{% url 'categories:list' %}" class="sidebar__link {% if request.resolver_match.app_name == 'categories' %}is-active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h7"/></svg>
+          کتگوری‌ها
+        </a>
+        <a href="{% url 'transactions:list' %}" class="sidebar__link {% if request.resolver_match.app_name == 'transactions' %}is-active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 17l5-10 3 6 4-8"/></svg>
+          تراکنش‌ها
+        </a>
+        {% comment %} <a href="{% url 'budgets:list' %}" class="sidebar__link {% if request.resolver_match.app_name == 'budgets' %}is-active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          بودجه‌ها
+        </a> {% endcomment %}
+      </nav>
+    </aside>
+
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{% static 'common/js/base.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

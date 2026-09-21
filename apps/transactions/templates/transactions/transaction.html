@@ -1,22 +1,86 @@
-<h1>{{ transaction.amount }} {{ transaction.account.currency.name }}</h1>
+{% extends "common/base.html" %}
 
-<p>{{ transaction.get_transaction_type_display }}</p>
-<p>{{ transaction.account.name }}</p>
-<p>{{ transaction.category.name }}</p>
-<p>{{ transaction.description }}</p>
-<p>{{ transaction.transaction_date }}</p>
+{% block title %}{{ transaction.amount }} {{ transaction.account.currency.name }}{% endblock %}
 
-<a href="{% url 'transactions:edit' transaction.pk %}">
-    ویرایش
-</a>
+{% block content %}
 
-<br />
+  <a href="{% url 'transactions:list' %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M15 6l-6 6 6 6" /></svg>
+    برگشت به تراکنش‌ها
+  </a>
 
-<a href="{% url 'transactions:list' %}">
-    برگشت
-</a>
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ transaction.amount }} {{ transaction.account.currency.name }}</h1>
+      <p class="page-header__meta">{{ transaction.get_transaction_type_display }}</p>
+    </div>
 
-<form method="get" action="{% url 'transactions:delete' transaction.pk %}">
-    {% csrf_token %}
-    <button type="submit">غیر فعال کردن</button>
-</form>
+    <div class="page-header__actions">
+      <a href="{% url 'transactions:edit' transaction.pk %}" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+        ویرایش
+      </a>
+      <button
+        type="button"
+        class="btn btn-danger-ghost"
+        data-confirm-modal="#delete-transaction-modal"
+        data-confirm-action="{% url 'transactions:delete' transaction.pk %}"
+        data-confirm-name="{{ transaction.amount }} {{ transaction.account.currency.name }}"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
+        غیرفعال کردن
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-card__header">
+      <span class="money {% if transaction.transaction_type == 'income' %}money--positive{% elif transaction.transaction_type == 'expense' %}money--negative{% endif %}" style="font-size: 1.3rem;">
+        {{ transaction.amount }} {{ transaction.account.currency.name }}
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-row__label">نوع تراکنش</span>
+      <span class="detail-row__value">{{ transaction.get_transaction_type_display }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-row__label">حساب</span>
+      <span class="detail-row__value">{{ transaction.account.name }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-row__label">دسته‌بندی</span>
+      <span class="detail-row__value">{{ transaction.category.name }}</span>
+    </div>
+
+    {% if transaction.description %}
+      <div class="detail-row">
+        <span class="detail-row__label">توضیحات</span>
+        <span class="detail-row__value">{{ transaction.description }}</span>
+      </div>
+    {% endif %}
+
+    <div class="detail-row">
+      <span class="detail-row__label">تاریخ</span>
+      <span class="detail-row__value detail-row__value--num" dir="ltr">{{ transaction.transaction_date }}</span>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="modal-overlay" id="delete-transaction-modal">
+    <div class="modal">
+      <h2 class="modal__title">غیرفعال کردن تراکنش</h2>
+      <p class="modal__text">
+        آیا از غیرفعال کردن تراکنش «<span data-confirm-name></span>» مطمئن هستید؟
+      </p>
+      <form method="post" data-confirm-target class="modal__actions">
+        {% csrf_token %}
+        <button type="button" class="btn btn-ghost" data-close-modal>انصراف</button>
+        <button type="submit" class="btn btn-primary" style="background: var(--negative);">غیرفعال کردن</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

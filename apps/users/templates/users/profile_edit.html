@@ -1,18 +1,36 @@
-<form method="post">
-    {% csrf_token %}
-    
-    User_Info:
-    {{user_form.as_p}}
-    {{user_form.errors}}
+{% extends "common/base.html" %}
 
-    UserProfile_Info:
-    {{profile_form.as_p}}
-    {{profile_form.errors}}
+{% block title %}ویرایش پروفایل{% endblock %}
 
-    <button type="submit">تایید</button>
+{% block content %}
 
-</form>
+  <a href="{% url 'users:profile' %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M15 6l-6 6 6 6" /></svg>
+    بازگشت
+  </a>
 
-<form method="get" action="{% url 'users:profile' %}">
-    <button type="submit">بازگشت</button>
-</form>
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">ویرایش اطلاعات</h1>
+      <p class="page-header__meta">اطلاعات حساب کاربری و پروفایل خود را به‌روزرسانی کنید</p>
+    </div>
+  </div>
+
+  <div class="form-card" style="max-width: 560px;">
+    <form method="post">
+      {% csrf_token %}
+
+      <h3 class="form-section-title">اطلاعات حساب کاربری</h3>
+      {% include "common/_form_fields.html" with form=user_form %}
+
+      <h3 class="form-section-title">اطلاعات پروفایل</h3>
+      {% include "common/_form_fields.html" with form=profile_form %}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        <a href="{% url 'users:profile' %}" class="btn btn-ghost">انصراف</a>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

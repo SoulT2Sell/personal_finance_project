@@ -1,7 +1,22 @@
-<h1> ٍثبت نام </h1>
+{% extends "common/auth_base.html" %}
 
-<form method="post">
+{% block title %}ثبت‌نام{% endblock %}
+
+{% block auth_content %}
+
+  <h1 class="auth-title">ساخت حساب کاربری</h1>
+  <p class="auth-subtitle">برای شروع مدیریت مالی خود ثبت‌نام کنید</p>
+
+  <form method="post">
     {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">ثبت نام</button>
-</form>
+    {% include "common/_form_fields.html" %}
+    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: var(--space-2);">
+      ثبت‌نام
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'users:login' %}">وارد شوید</a>
+  </p>
+
+{% endblock %}

@@ -1,12 +1,31 @@
-<h1>ویرایش</h1>
+{% extends "common/base.html" %}
 
-<form method="Post">
-    {% csrf_token %}
-    {{form.as_p}}
-    {{form.errors}}
-    <button type="submit">تایید</button>
-</form>
+{% block title %}ویرایش حساب{% endblock %}
 
-<form method="Get" action="{% url 'accounts:detail' account.slug %}">
-    <button type="submit">برگشت</button>
-</form>
+{% block content %}
+
+  <a href="{% url 'accounts:detail' account.slug %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M15 6l-6 6 6 6" /></svg>
+    برگشت
+  </a>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">ویرایش حساب</h1>
+      <p class="page-header__meta">{{ account.name }}</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+      {% include "accounts/_form.html" %}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        <a href="{% url 'accounts:detail' account.slug %}" class="btn btn-ghost">انصراف</a>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

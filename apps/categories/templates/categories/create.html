@@ -1,12 +1,31 @@
-<h1>ساخت کتگوری</h1>
+{% extends "common/base.html" %}
 
-<form method="Post">
-    {% csrf_token %}
-    {{form.as_p}}
-    {{form.errors}}
-    <button type="submit">تایید</button>
-</form>
+{% block title %}ساخت کتگوری{% endblock %}
 
-<form method="Get" action="{% url 'categories:list' %}">
-    <button type="submit">برگشت</button>
-</form>
+{% block content %}
+
+  <a href="{% url 'categories:list' %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M15 6l-6 6 6 6" /></svg>
+    برگشت به کتگوری‌ها
+  </a>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">ساخت کتگوری جدید</h1>
+      <p class="page-header__meta">یک کتگوری برای دسته‌بندی تراکنش‌های خود بسازید.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+      {% include "categories/_form.html" %}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">ساخت کتگوری</button>
+        <a href="{% url 'categories:list' %}" class="btn btn-ghost">انصراف</a>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

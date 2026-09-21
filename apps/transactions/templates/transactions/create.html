@@ -1,14 +1,36 @@
-<h1>ساخت تراکنش</h1>
+{% extends "common/base.html" %}
+{% load static %}
 
-<form method="post">
-    {% csrf_token %}
+{% block title %}ساخت تراکنش{% endblock %}
 
-    {{ form.as_p }}
-    {{ form.errors }}
+{% block content %}
 
-    <button type="submit">تایید</button>
-</form>
+  <a href="{% url 'transactions:list' %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M15 6l-6 6 6 6" /></svg>
+    برگشت به تراکنش‌ها
+  </a>
 
-<form method="get" action="{% url 'transactions:list' %}">
-    <button type="submit">برگشت</button>
-</form>
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">ساخت تراکنش جدید</h1>
+      <p class="page-header__meta">یک تراکنش درآمد، هزینه یا انتقال ثبت کنید.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+      {% include "transactions/_form.html" %}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">ثبت تراکنش</button>
+        <a href="{% url 'transactions:list' %}" class="btn btn-ghost">انصراف</a>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'transactions/js/transaction_form.js' %}"></script>
+{% endblock %}

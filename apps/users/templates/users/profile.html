@@ -1,17 +1,59 @@
-<h1>Profile for user:</h1>
-<p>{{request.user.username}}</p>
-<p>{{request.user.email}}</p>
-<p>{{request.user.first_name}}</p>
-<p>{{request.user.last_name}}</p>
-<p>{{request.user.userprofile.phone_number}}</p>
-<p>{{request.user.userprofile.preferred_currency.name}}</p>
-<p>{{request.user.userprofile.timezone}}</p>
+{% extends "common/base.html" %}
 
-<form method="get" action="{% url 'users:profile_edit'%}">
-    <button style="submit">ویرایش اطلاعات</button>
-</form>
+{% block title %}پروفایل{% endblock %}
 
-<form method="post" action="{% url 'users:logout' %}">
-    {% csrf_token %}
-    <button style="submit">خروج</button>
-</form>
+{% block content %}
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ request.user.username }}</h1>
+      <p class="page-header__meta">اطلاعات حساب کاربری</p>
+    </div>
+
+    <div class="page-header__actions">
+      <a href="{% url 'users:profile_edit' %}" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+        ویرایش اطلاعات
+      </a>
+      <form method="post" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>
+          خروج
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-row">
+      <span class="detail-row__label">نام کاربری</span>
+      <span class="detail-row__value" dir="ltr">{{ request.user.username }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">ایمیل</span>
+      <span class="detail-row__value" dir="ltr">{{ request.user.email|default:"—" }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">نام</span>
+      <span class="detail-row__value">{{ request.user.first_name|default:"—" }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">نام خانوادگی</span>
+      <span class="detail-row__value">{{ request.user.last_name|default:"—" }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">شماره تلفن</span>
+      <span class="detail-row__value" dir="ltr">{{ request.user.userprofile.phone_number|default:"—" }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">ارز پیش‌فرض</span>
+      <span class="detail-row__value">{{ request.user.userprofile.preferred_currency.name|default:"—" }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-row__label">منطقه زمانی</span>
+      <span class="detail-row__value" dir="ltr">{{ request.user.userprofile.timezone|default:"—" }}</span>
+    </div>
+  </div>
+
+{% endblock %}

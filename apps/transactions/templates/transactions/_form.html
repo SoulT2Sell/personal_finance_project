@@ -1,0 +1,36 @@
+{% if form.non_field_errors %}
+  <ul class="errorlist">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+{% endif %}
+
+{% for field in form %}
+  <div class="form-group">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+    {% if field.name == "account" %}
+      <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" data-account-select>
+        <option value="">---------</option>
+        {% for acc in field.field.queryset %}
+          <option
+            value="{{ acc.pk }}"
+            data-currency="{{ acc.currency.name }}"
+            {% if field.value|stringformat:"s" == acc.pk|stringformat:"s" %}selected{% endif %}
+          >
+            {{ acc.name }}
+          </option>
+        {% endfor %}
+      </select>
+      <p class="help-text" id="account-currency-hint"></p>
+    {% else %}
+      {{ field }}
+    {% endif %}
+
+    {% if field.help_text %}<p class="help-text">{{ field.help_text }}</p>{% endif %}
+    {% if field.errors %}
+      <ul class="errorlist">
+        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+{% endfor %}
