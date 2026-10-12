@@ -27,3 +27,15 @@ class Category(BaseModel):
             ),
         ]
 
+# class ProgressableCategory(Category):
+#     target_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+#     current_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+#     deadline = models.DateField(null=True, blank=True)
+#     monthly_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    
+#     @property
+#     def progress(self):
+#         if self.target_amount == 0: 
+#             return 0
+
+#         return (self.target_amount/self.current_amount) * 100
