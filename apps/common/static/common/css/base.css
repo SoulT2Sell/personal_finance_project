@@ -665,6 +665,126 @@ a {
 
 .filter-grid .form-group { margin-bottom: 0; }
 
+/* -------------------- Dashboard -------------------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+
+.stat-card__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.stat-card__value {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.stat-card__hint {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  margin-top: var(--space-1);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.panel__title {
+  font-size: 0.95rem;
+}
+
+.panel__link {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.panel__link:hover { color: var(--ink); }
+
+.panel__empty {
+  padding: var(--space-5);
+}
+
+.category-breakdown {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.category-bar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.category-bar__name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.category-bar__value {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+.category-bar__pct {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+}
+
+.progress {
+  height: 6px;
+  background: var(--paper);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background: var(--warning);
+  border-radius: 3px;
+}
+
 /* -------------------- Focus & motion -------------------- */
 
 a:focus-visible,
@@ -691,4 +811,6 @@ input:focus-visible {
   .sidebar__nav { flex-direction: row; overflow-x: auto; }
   .main { padding: var(--space-4); }
   .ledger__figure { display: none; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }

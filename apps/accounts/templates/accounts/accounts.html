@@ -1,5 +1,6 @@
 {% extends "common/base.html" %}
 {% load static %}
+{% load currency_tags %}
 
 {% block title %}حساب‌ها{% endblock %}
 
@@ -35,16 +36,16 @@
       <option value="">همه انواع حساب</option>
       {% for account_type in account_types %}
         <option value="{{ account_type.pk }}" {% if request.GET.account_type == account_type.pk|stringformat:"s" %}selected{% endif %}>
-          {{ account_type.name }}
+          {{ account_type.name|account_type_name }}
         </option>
       {% endfor %}
     </select>
 
-    <select name="currency" class="filter-select">
+      <select name="currency" class="filter-select">
       <option value="">همه ارزها</option>
       {% for currency in currencies %}
         <option value="{{ currency }}" {% if request.GET.currency == currency %}selected{% endif %}>
-          {{ currency }}
+          {{ currency.name|currency_name }}
         </option>
       {% endfor %}
     </select>
@@ -61,13 +62,13 @@
           <div class="ledger__body">
             <div class="ledger__name">{{ account.name }}</div>
             <div class="ledger__sub">
-              <span class="tag">{{ account.account_type.name }}</span>
-              <span class="tag">{{ account.currency.name }}</span>
+              <span class="tag">{{ account.account_type.name|account_type_name }}</span>
+              <span class="tag">{{ account.currency.name|currency_name }}</span>
             </div>
           </div>
 
           <span class="ledger__figure money {% if account.balance < 0 %}money--negative{% else %}money--positive{% endif %}">
-            {{ account.balance }}
+            {% format_currency account.balance account.currency.name %}
           </span>
 
           <div class="ledger__actions">

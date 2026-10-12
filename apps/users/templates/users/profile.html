@@ -1,4 +1,5 @@
 {% extends "common/base.html" %}
+{% load currency_tags %}
 
 {% block title %}پروفایل{% endblock %}
 
@@ -48,7 +49,7 @@
     </div>
     <div class="detail-row">
       <span class="detail-row__label">ارز پیش‌فرض</span>
-      <span class="detail-row__value">{{ request.user.userprofile.preferred_currency.name|default:"—" }}</span>
+      <span class="detail-row__value">{{ request.user.userprofile.preferred_currency.name|currency_name|default:"—" }}</span>
     </div>
     <div class="detail-row">
       <span class="detail-row__label">منطقه زمانی</span>

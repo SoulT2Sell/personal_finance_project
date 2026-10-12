@@ -1,5 +1,6 @@
 {% extends "common/base.html" %}
 {% load static %}
+{% load currency_tags %}
 
 {% block title %}تراکنش‌ها{% endblock %}
 
@@ -64,7 +65,7 @@
             <option value="">همه</option>
             {% for currency in currencies %}
               <option value="{{ currency.id }}" {% if request.GET.currency == currency.id|stringformat:"s" %}selected{% endif %}>
-                {{ currency.name }}
+                {{ currency.name|currency_name }}
               </option>
             {% endfor %}
           </select>
@@ -119,7 +120,7 @@
           <span class="ledger__figure money
             {% if transaction.transaction_type == 'income' %}money--positive
             {% elif transaction.transaction_type == 'expense' %}money--negative{% endif %}">
-            {{ transaction.amount }} {{ transaction.account.currency.name }}
+            {% format_currency transaction.amount transaction.account.currency.name %}
           </span>
 
           <div class="ledger__actions">
@@ -135,7 +136,7 @@
               title="غیرفعال کردن"
               data-confirm-modal="#delete-transaction-modal"
               data-confirm-action="{% url 'transactions:delete' transaction.pk %}"
-              data-confirm-name="{{ transaction.amount }} {{ transaction.account.currency.name }}"
+              data-confirm-name="{% format_currency transaction.amount transaction.account.currency.name %}"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
             </button>

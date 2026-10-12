@@ -1,5 +1,5 @@
 {% extends "common/base.html" %}
-{% load static %}
+{% load static currency_tags %}
 
 {% block title %}ویرایش تراکنش{% endblock %}
 
@@ -13,7 +13,7 @@
   <div class="page-header">
     <div>
       <h1 class="page-header__title">ویرایش تراکنش</h1>
-      <p class="page-header__meta">{{ transaction.amount }} {{ transaction.account.currency.name }}</p>
+      <p class="page-header__meta">{% format_currency transaction.amount transaction.account.currency.name %}</p>
     </div>
   </div>
 
@@ -32,5 +32,5 @@
 {% endblock %}
 
 {% block extra_js %}
-  <script src="{% static 'transactions/js/transaction_form.js' %}"></script>
+  <script src="{% static 'common/js/transaction_form.js' %}"></script>
 {% endblock %}

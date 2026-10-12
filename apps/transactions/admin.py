@@ -1,39 +1,39 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from apps.transactions.models import Transaction
+from apps.transactions.choices import TransactionType
 
-# Register your models here.
+
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = (
-        "id", 
-        "user", 
-        "account", 
+        "id",
+        "user",
+        "account",
         "category",
-        "transaction_type", 
-        "amount", 
+        "transaction_type",
+        "amount",
         "description",
-        "transaction_date", 
-        "created_at", 
-        "updated_at", 
-        "is_active"
+        "transaction_date",
+        "created_at",
+        "updated_at",
+        "is_active",
     )
-    search_fields = ("id", "category", "account", "transaction_date", "amount", "created_at", "update_at", 'is-active')
-    ordering = ("transaction_date",)
+    search_fields = (
+        "id",
+        "category__name",
+        "account__name",
+        "transaction_date",
+        "amount",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("transaction_type", "is_active", "account__currency", "category")
+    ordering = ("-transaction_date",)
+    verbose_name = _("تراکنش")
+    verbose_name_plural = _("تراکنش‌ها")
 
-# @admin.register(Transfer)
-# class TransferAdmin(admin.ModelAdmin):
-#     list_display = (
-#         "id",
-#         "from_account",
-#         "to_account",
-#         "amount",
-#         "description",
-#         "transfer_date",
-#         "created_at", 
-#         "updated_at", 
-#         "is_active"
-#     )
-
-#     search_fields = ("id", "from_account", "to_account", "transfer_date", "amount", "created_at", "updated_at", "is_active")
-#     ordering = ("transfer_date",)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related("user", "account", "category", "account__currency")

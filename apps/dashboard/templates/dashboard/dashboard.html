@@ -1,0 +1,168 @@
+{% extends "common/base.html" %}
+{% load static %}
+{% load currency_tags %}
+
+{% block title %}داشبورد{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">داشبورد</h1>
+      <p class="page-header__meta">نمای کلی وضعیت مالی شما</p>
+    </div>
+
+    <div class="page-header__actions">
+      <a href="{% url 'transactions:create' %}" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+        تراکنش جدید
+      </a>
+    </div>
+  </div>
+
+  {% if recent_transactions or accounts %}
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-card__label">موجودی کل ({{ preferred_currency.name|currency_name }})</div>
+        <div class="stat-card__value money {% if total_balance < 0 %}money--negative{% else %}money--positive{% endif %}">
+          {% format_currency total_balance preferred_currency.name %}
+        </div>
+        <div class="stat-card__hint">{{ accounts|length }} حساب فعال</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__label">درآمد این ماه ({{ preferred_currency.name|currency_name }})</div>
+        <div class="stat-card__value money money--positive">{% format_currency month_income preferred_currency.name %}</div>
+        <div class="stat-card__hint">کل درآمدها: {% format_currency income preferred_currency.name %}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__label">هزینه این ماه ({{ preferred_currency.name|currency_name }})</div>
+        <div class="stat-card__value money money--negative">{% format_currency month_expense preferred_currency.name %}</div>
+        <div class="stat-card__hint">کل هزینه‌ها: {% format_currency expense preferred_currency.name %}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__label">خالص این ماه ({{ preferred_currency.name|currency_name }})</div>
+        <div class="stat-card__value money {% if month_net < 0 %}money--negative{% else %}money--positive{% endif %}">
+          {% format_currency month_net preferred_currency.name %}
+        </div>
+        <div class="stat-card__hint">خالص کل: {% format_currency net preferred_currency.name %}</div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <section class="panel">
+        <div class="panel__header">
+          <h2 class="panel__title">آخرین تراکنش‌ها</h2>
+          <a href="{% url 'transactions:list' %}" class="panel__link">مشاهده همه</a>
+        </div>
+
+        {% if recent_transactions %}
+          <div class="ledger">
+            {% for transaction in recent_transactions %}
+              <div class="ledger__row">
+                <span class="ledger__swatch" style="background:
+                  {% if transaction.transaction_type == 'income' %}var(--positive)
+                  {% elif transaction.transaction_type == 'expense' %}var(--negative)
+                  {% else %}var(--warning){% endif %};"></span>
+
+                <div class="ledger__body">
+                  <div class="ledger__name">{{ transaction.description|default:transaction.category.name }}</div>
+                  <div class="ledger__sub">
+                    <span class="tag">{{ transaction.account.name }}</span>
+                    <span class="tag">{{ transaction.category.name }}</span>
+                    <span class="tag" dir="ltr">{{ transaction.transaction_date }}</span>
+                  </div>
+                </div>
+
+                <span class="ledger__figure money
+                  {% if transaction.transaction_type == 'income' %}money--positive
+                  {% elif transaction.transaction_type == 'expense' %}money--negative{% endif %}">
+                  {% format_currency transaction.amount transaction.account.currency.name %}
+                </span>
+
+                <div class="ledger__actions">
+                  <a href="{% url 'transactions:detail' transaction.pk %}" class="icon-btn" title="اطلاعات">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" /><circle cx="12" cy="12" r="3" /></svg>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="panel__empty empty-state" style="padding: var(--space-5);">
+            <div class="empty-state__title">هنوز تراکنشی ثبت نشده</div>
+            <p>اولین تراکنش خود را ثبت کنید تا اینجا نمایش داده شود.</p>
+          </div>
+        {% endif %}
+      </section>
+
+      <div class="dashboard-side" style="display: flex; flex-direction: column; gap: var(--space-4);">
+        <section class="panel">
+          <div class="panel__header">
+            <h2 class="panel__title">حساب‌ها</h2>
+            <a href="{% url 'accounts:list' %}" class="panel__link">مشاهده همه</a>
+          </div>
+
+          {% if accounts %}
+            {% for account in accounts %}
+              <div class="detail-row">
+                <span class="detail-row__label">
+                  {{ account.name }}
+                  <span class="tag">{{ account.currency.name|currency_name }}</span>
+                </span>
+                <span class="detail-row__value detail-row__value--num money {% if account.balance < 0 %}money--negative{% else %}money--positive{% endif %}">
+                  {% format_currency account.balance account.currency.name %}
+                </span>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="panel__empty empty-state" style="padding: var(--space-5);">
+              <div class="empty-state__title">حسابی ندارید</div>
+            </div>
+          {% endif %}
+        </section>
+
+        <section class="panel">
+          <div class="panel__header">
+            <h2 class="panel__title">هزینه‌ها بر اساس دسته‌بندی ({{ preferred_currency.name|currency_name }})</h2>
+            <a href="{% url 'categories:list' %}" class="panel__link">دسته‌بندی‌ها</a>
+          </div>
+
+          {% if top_categories %}
+            <div class="category-breakdown">
+              {% for row in top_categories %}
+                <div class="category-bar">
+                  <div class="category-bar__head">
+                    <span class="category-bar__name">{{ row.name }}</span>
+                    <span class="category-bar__value">
+                      {% format_currency row.total preferred_currency.name %}
+                      <span class="category-bar__pct">· {% widthratio row.total max_category_total 100 %}٪</span>
+                    </span>
+                  </div>
+                  <div class="progress">
+                    <div class="progress__bar" style="width: {% widthratio row.total max_category_total 100 %}%;"></div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="panel__empty empty-state" style="padding: var(--space-5);">
+              <div class="empty-state__title">هزینه‌ای ثبت نشده</div>
+            </div>
+          {% endif %}
+        </section>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state__title">به دفتر مالی خوش آمدید</div>
+      <p>برای شروع، اولین حساب و تراکنش خود را ثبت کنید تا داشبورد نمایش داده شود.</p>
+      <a href="{% url 'transactions:create' %}" class="btn btn-primary" style="margin-top: 12px;">ثبت تراکنش جدید</a>
+    </div>
+  {% endif %}
+
+{% endblock %}

@@ -1,9 +1,9 @@
 from django.db import models
 
 class TransactionType(models.TextChoices):
-    INCOME = "income", "Income"
-    EXPENSE = "expense", "Expense"
-    TRANSFER = "transfer", "Transfer"
-    REFUND = "refund", "Refund"
-    FEE = "fee", "Fee"
-    ADJUSTMENT = "adjustment", "Adjustment"
+    INCOME = "income", "درآمد"
+    EXPENSE = "expense", "هزینه"
+    TRANSFER = "transfer", "انتقال"
+    REFUND = "refund", "بازپرداخت"
+    FEE = "fee", "کارکرد"
+    ADJUSTMENT = "adjustment", "تنظیم"

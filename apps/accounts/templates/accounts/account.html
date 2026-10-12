@@ -1,4 +1,5 @@
 {% extends "common/base.html" %}
+{% load currency_tags %}
 
 {% block title %}{{ account.name }}{% endblock %}
 
@@ -37,18 +38,18 @@
     <div class="detail-card__header">
       <h2 class="detail-card__title">موجودی فعلی</h2>
       <span class="money {% if account.balance < 0 %}money--negative{% else %}money--positive{% endif %}" style="font-size: 1.3rem; margin-inline-start: auto;">
-        {{ account.balance }}
+        {% format_currency account.balance account.currency.name %}
       </span>
     </div>
 
     <div class="detail-row">
       <span class="detail-row__label">نوع حساب</span>
-      <span class="detail-row__value">{{ account.account_type.name }}</span>
+      <span class="detail-row__value">{{ account.account_type.name|account_type_name }}</span>
     </div>
 
     <div class="detail-row">
       <span class="detail-row__label">نوع ارز</span>
-      <span class="detail-row__value">{{ account.currency.name }}</span>
+      <span class="detail-row__value">{{ account.currency.name|currency_name }}</span>
     </div>
 
     <div class="detail-row">

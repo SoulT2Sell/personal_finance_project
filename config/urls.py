@@ -17,9 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from apps.common.admin_site import persian_admin_site
+from apps.common.views import HomeView
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
+    path("admin-persian/", persian_admin_site.urls),
     path("users/", include(("apps.users.urls", "users"), namespace="users")),
     path(
         "accounts/", include(("apps.accounts.urls", "accounts"), namespace="accounts")
@@ -28,5 +32,9 @@ urlpatterns = [
         "categories/",
         include(("apps.categories.urls", "categories"), namespace="categories"),
     ),
-    path("transactions/", include(("apps.transactions.urls", "transactions"), namespace="transactions"))
+    path(
+        "transactions/",
+        include(("apps.transactions.urls", "transactions"), namespace="transactions")
+    ),
+    path("dashboard/", include(("apps.dashboard.urls", "dashboard"), namespace="dashboard")),
 ]

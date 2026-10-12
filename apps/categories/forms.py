@@ -9,6 +9,9 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ["name"]
+        labels = {
+            "name": "نام دسته‌بندی",
+        }
 
     def save(self, commit=True):
         category = super().save(commit=False)

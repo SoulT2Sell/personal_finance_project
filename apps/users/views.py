@@ -24,7 +24,7 @@ class UserSignupView(FormView):
 class UserLoginView(LoginView):
     template_name = "users/login.html"
     redirect_authenticated_user = True
-    next_page = "users:profile"
+    next_page = "dashboard:home"
 
 
 class UserLogoutView(LogoutView):
